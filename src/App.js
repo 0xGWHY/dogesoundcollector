@@ -8,9 +8,8 @@ import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
 
 function App() {
-  // const caver = new Caver("https://public-node-api.klaytnapi.com/v1/cypress");
+  // const caver = new Caver("wss://public-node-api.klaytnapi.com/v1/cypress/ws");
   const caver = new Caver("wss://public-en-cypress.klaytn.net/ws");
-  // const caver = new Caver("https://public-node-api.klaytnapi.com/v1/cypress");
   const [data, setData] = useState("");
   const [latestBlock, setLatestBlock] = useState();
   const [hasBlock, setHasBlock] = useState(false);
@@ -331,14 +330,7 @@ function App() {
     "0x1a693c175e510959f37d54acff0fac0dac8d9a2d"
   );
   const [active, setActive] = useState(false);
-
-  // const subscribe = contract.subscribe("allEvents", function (error, event) {
-  //   console.log(event);
-  // });
-  // const allEvents = contract.events.allEvents((e) => {
-  //   console.log(e);
-  // });
-  const pastEvents = contract.getPastEvents("allEvents", { fromBlock: 114558433, toBlock: "latest" }).then((e) => e);
+  const [search, setSearch] = useState("");
 
   const toDSC = (number) => {
     const url = `https://v3.dogesound.club/mates/${number}`;
@@ -349,16 +341,44 @@ function App() {
     window.open(url, "_blank");
   };
 
+  // const getBlockDateByNumber = (blockNumber) => {
+  //   const dateNow = new Date().getTime();
+  //   let result = "";
+  //   return caver.rpc.klay
+  //     .getBlockByNumber(blockNumber)
+  //     .then((block) => new Date(caver.utils.hexToNumber(block.timestamp) * 1000))
+  //     .then((date) => {
+  //       const ago =
+  //         Math.floor((dateNow - date) / 1000, 0) < 60 * 60
+  //           ? `${Math.max(Math.floor((dateNow - date) / 1000 / 60, 0), 1)} min ago`
+  //           : Math.floor((dateNow - date) / 1000, 0) < 60 * 60 * 24
+  //           ? `${Math.floor((dateNow - date) / 1000 / 60 / 60, 0)} hours ago`
+  //           : Math.floor((dateNow - date) / 1000, 0) < 60 * 60 * 24 * 30
+  //           ? `${Math.floor((dateNow - date) / 1000 / 60 / 60 / 24, 0)} days ago`
+  //           : `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${date.getDate()}`;
+  //       return ago;
+  //     })
+  //     .then((e) => {
+  //       result = e;
+  //     });
+  // };
+
   const fetch = async (block) => {
     let blockCount = block;
     let result = [];
     while (result.length < 20 && blockCount > 0) {
-      await contract.getPastEvents("allEvents", { fromBlock: blockCount - 100000, toBlock: blockCount }).then((e) => {
+      await contract.getPastEvents("allEvents", { fromBlock: blockCount - 100000 > 0 ? blockCount - 100000 : 0, toBlock: blockCount }).then((e) => {
         result = [...e, ...result];
       });
-      blockCount -= 100000;
+      // console.log(blockCount);
+      if (blockCount - 10000 > 0) {
+        blockCount -= 100000;
+      } else {
+        blockCount = 0;
+      }
     }
-    return { data: result.reverse(), lastBlock: blockCount };
+
+    return { data: result.reverse(), lastBlock: blockCount > 0 ? blockCount : undefined };
   };
 
   caver.rpc.klay
@@ -387,7 +407,7 @@ function App() {
 
   const skeletonHandler = () => {
     let temp = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 6; i++) {
       temp.push(
         <SkeletonUnit key={i}>
           <div className="box-profile">
@@ -412,30 +432,75 @@ function App() {
       <Header>
         <div>Doge Sound Collector</div>
         <p>"너의 개소리가 들려"</p>
+        <div>
+          <input
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                toDSC(search);
+                setSearch("");
+              }
+            }}
+            value={search}
+            type="number"
+            placeholder="MATE ID"
+          ></input>
+        </div>
       </Header>
       <MakeDogeSound active={active} setActive={setActive} />
       {dogeSounds.data?.pages
         ?.flatMap((flatMap) => flatMap.data)
-        .map((map) => (
-          <MsgUnit key={map.transactionHash}>
-            <div className="box-profile">
-              <img src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.returnValues.mateId}.png`} alt={map.returnValues.mateId} onClick={() => toDSC(map.returnValues.mateId)}></img>
-            </div>
-            <div className="box-body">
-              <div className="box-header">
-                <div className="mate-name" onClick={() => toDSC(map.returnValues.mateId)}>{`MATE #${map.returnValues.mateId}${map.returnValues.name ? ` - ${map.returnValues.name}` : ""}`}</div>
-              </div>
-              <div className="box-content">
-                <p>{map.returnValues.message}</p>
-              </div>
-              <div className="check-tx">
-                <p onClick={() => toScope(map.transactionHash)}>블록체인에서 확인하기</p>
-              </div>
-            </div>
-          </MsgUnit>
-        ))}
+        .map((map) => {
+          if (map.blockNumber === 67658287) {
+            return (
+              <MsgUnit key={map.transactionHash}>
+                <div className="box-profile">
+                  <img src={`https://v3.dogesound.club/images/shared/logo/dsc.svg`} alt="태초마을"></img>
+                </div>
+                <div className="box-body">
+                  <div className="box-header">
+                    <div className="mate-name">태초마을</div>
+                  </div>
+                  <div className="box-content">
+                    <p>개소리 컨트랙트가 생성되었다. 신나게 써 갈겨보자.</p>
+                  </div>
+                  <div className="check-tx">
+                    <p className="block-number">{`#${map.blockNumber}`}</p>
+                    <p className="scope" onClick={() => toScope(map.transactionHash)}>
+                      블록체인에서 확인하기
+                    </p>
+                  </div>
+                </div>
+              </MsgUnit>
+            );
+          } else {
+            return (
+              <MsgUnit key={map.transactionHash}>
+                <div className="box-profile">
+                  <img src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.returnValues.mateId}.png`} alt={map.returnValues.mateId} onClick={() => toDSC(map.returnValues.mateId)}></img>
+                </div>
+                <div className="box-body">
+                  <div className="box-header">
+                    <div className="mate-name" onClick={() => toDSC(map.returnValues.mateId)}>{`MATE #${map.returnValues.mateId}${map.returnValues.name ? ` - ${map.returnValues.name}` : ""}`}</div>
+                  </div>
+                  <div className="box-content">
+                    <p>{map.returnValues.message}</p>
+                  </div>
+                  <div className="check-tx">
+                    <p className="block-number">{`#${map.blockNumber}`}</p>
+                    <p className="scope" onClick={() => toScope(map.transactionHash)}>
+                      블록체인에서 확인하기
+                    </p>
+                  </div>
+                </div>
+              </MsgUnit>
+            );
+          }
+        })}
       {dogeSounds.isFetching ? skeletonHandler() : ""}
-      {dogeSounds.isFetching ? "" : <div className="cursor" ref={ref}></div>}
+      {dogeSounds.isFetching ? "" : dogeSounds.hasNextPage ? <div className="cursor" ref={ref}></div> : ""}
     </div>
   );
 }
@@ -449,12 +514,8 @@ const Header = styled.div`
   align-items: center;
   width: 100%;
   max-width: 800px;
-  @media all and (max-width: 799px) {
-    margin: 1rem 1rem 2rem 1rem;
-  }
-  @media all and (min-width: 800px) {
-    margin: 1rem 1rem 3rem 1rem;
-  }
+  position: relative;
+  margin: 1rem 1rem 3rem 1rem;
 
   div {
     @media all and (max-width: 799px) {
@@ -463,6 +524,31 @@ const Header = styled.div`
     @media all and (min-width: 800px) {
       font-size: 4rem;
     }
+  }
+  input {
+    position: absolute;
+    @media all and (max-width: 799px) {
+      bottom: -2rem;
+      right: 1rem;
+    }
+    @media all and (min-width: 800px) {
+      bottom: -2rem;
+    }
+
+    height: 1.5rem;
+    border-radius: 5px;
+    padding-left: 1rem;
+    color: white;
+    width: 6rem;
+    right: 0;
+    border: none;
+    background-color: var(--color-box-header);
+    outline: none;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 `;
 
@@ -507,11 +593,17 @@ const MsgUnit = styled.div`
   .box-header {
     display: flex;
     margin-bottom: 0.5rem;
+    justify-content: space-between;
     div {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       color: yellow;
     }
     .mate-name {
+      cursor: pointer;
+    }
+    .block-number {
+      color: white;
+      font-size: 1rem;
       cursor: pointer;
     }
   }
@@ -530,10 +622,16 @@ const MsgUnit = styled.div`
   .check-tx {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
-    margin-top: 1rem;
-    p {
+    align-items: flex-end;
+    margin-top: 0.5rem;
+    .block-number {
+      color: white;
+      margin-bottom: 0.3rem;
+      cursor: default;
+    }
+    .scope {
       color: yellow;
       cursor: pointer;
     }
