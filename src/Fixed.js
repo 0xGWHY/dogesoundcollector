@@ -109,7 +109,7 @@ const Fixed = styled.div`
       width: 5rem;
       background-color: black;
       color: yellow;
-      border-radius: 5px;
+      border-radius: 6px;
       font-weight: 500;
       cursor: pointer;
     }
