@@ -554,7 +554,6 @@ const Header = styled.div`
 
 const MsgUnit = styled.div`
   display: flex;
-
   background-color: var(--color-box-content);
   border-radius: 15px;
   padding: 1rem 1rem 1.5rem 1rem;
@@ -580,11 +579,24 @@ const MsgUnit = styled.div`
   }
 
   .box-profile {
-    margin-right: 1.5rem;
+    @media all and (max-width: 799px) {
+      margin-right: 1rem;
+    }
+    @media all and (min-width: 800px) {
+      margin-right: 1.5rem;
+    }
     img {
-      width: 4rem;
-      height: auto;
-      min-height: 4rem;
+      @media all and (max-width: 799px) {
+        width: 2.5rem;
+        height: auto;
+        min-height: 2.5rem;
+      }
+      @media all and (min-width: 800px) {
+        width: 4rem;
+        height: auto;
+        min-height: 4rem;
+      }
+
       background-color: var(--color-background);
       border-radius: 1000px;
       cursor: pointer;
@@ -595,15 +607,15 @@ const MsgUnit = styled.div`
     margin-bottom: 0.5rem;
     justify-content: space-between;
     div {
-      font-size: 1.1rem;
+      @media all and (max-width: 799px) {
+        font-size: 0.9rem;
+      }
+      @media all and (min-width: 800px) {
+        font-size: 1.1rem;
+      }
       color: yellow;
     }
     .mate-name {
-      cursor: pointer;
-    }
-    .block-number {
-      color: white;
-      font-size: 1rem;
       cursor: pointer;
     }
   }
@@ -613,10 +625,16 @@ const MsgUnit = styled.div`
   .box-content {
     background-color: var(--color-box-content);
     p {
-      line-height: 150%;
       word-break: break-all;
       width: 100%;
       cursor: default;
+      @media all and (max-width: 799px) {
+        line-height: 150%;
+        font-size: 0.8rem;
+      }
+      @media all and (min-width: 800px) {
+        line-height: 150%;
+      }
     }
   }
   .check-tx {
@@ -630,10 +648,20 @@ const MsgUnit = styled.div`
       color: white;
       margin-bottom: 0.3rem;
       cursor: default;
+      @media all and (max-width: 799px) {
+        font-size: 0.8rem;
+      }
+      @media all and (min-width: 800px) {
+      }
     }
     .scope {
       color: yellow;
       cursor: pointer;
+      @media all and (max-width: 799px) {
+        font-size: 0.8rem;
+      }
+      @media all and (min-width: 800px) {
+      }
     }
   }
 `;
