@@ -483,7 +483,7 @@ function App() {
                 </div>
                 <div className="box-body">
                   <div className="box-header">
-                    <div className="mate-name" onClick={() => toDSC(map.returnValues.mateId)}>{`MATE #${map.returnValues.mateId}${map.returnValues.name ? ` - ${map.returnValues.name}` : ""}`}</div>
+                    <div className="mate-name" onClick={() => toDSC(map.returnValues.mateId)}>{`MATE #${map.returnValues.mateId}${map.returnValues.mateId === "5268" ? " 🍕" : map.returnValues.name ? ` - ${map.returnValues.name}` : ""}`}</div>
                   </div>
                   <div className="box-content">
                     <p>{map.returnValues.message}</p>
