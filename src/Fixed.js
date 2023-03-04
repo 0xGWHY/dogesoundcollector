@@ -65,7 +65,13 @@ const Fixed = styled.div`
   color: ${(props) => (props.active ? "white" : "yellow")};
   font-size: 1.2rem;
   border-top: 2px solid yellow;
-  padding: 1rem 0 1rem 0;
+
+  @media all and (max-width: 799px) {
+    padding: 1rem;
+  }
+  @media all and (min-width: 800px) {
+    padding: 1rem 0 1rem 0;
+  }
   cursor: ${(props) => (props.active ? "default" : "pointer")};
   transition: height 0.3s;
   textarea {

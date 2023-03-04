@@ -447,27 +447,48 @@ const Header = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 1rem 1rem 3rem 1rem;
   width: 100%;
   max-width: 800px;
+  @media all and (max-width: 799px) {
+    margin: 1rem 1rem 2rem 1rem;
+  }
+  @media all and (min-width: 800px) {
+    margin: 1rem 1rem 3rem 1rem;
+  }
 
   div {
-    font-size: 4rem;
+    @media all and (max-width: 799px) {
+      font-size: 2rem;
+    }
+    @media all and (min-width: 800px) {
+      font-size: 4rem;
+    }
   }
 `;
 
 const MsgUnit = styled.div`
   display: flex;
-  margin: 0 1rem 1rem 1rem;
+
   background-color: var(--color-box-content);
   border-radius: 15px;
   padding: 1rem 1rem 1.5rem 1rem;
-  width: 100%;
   max-width: 800px;
   transition: all 0.3s;
+
+  @media all and (max-width: 799px) {
+    width: 90%;
+    margin-bottom: 1rem;
+  }
+  @media all and (min-width: 800px) {
+    width: 100%;
+    margin: 0 1rem 1rem 1rem;
+  }
+
   &:hover {
-    transform: scale(1.05);
-    box-shadow: rgba(255, 255, 0, 0.5) 0px 0px 10px;
+    @media all and (min-width: 800px) {
+      transform: scale(1.05);
+      box-shadow: rgba(255, 255, 0, 0.5) 0px 0px 10px;
+    }
   }
   .box-profile {
     margin-right: 1.5rem;
