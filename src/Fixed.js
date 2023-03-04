@@ -106,10 +106,10 @@ const Fixed = styled.div`
     button {
       border: none;
       height: 1.5rem;
-      width: 5rem;
+      width: 6rem;
       background-color: black;
       color: yellow;
-      border-radius: 6px;
+      border-radius: 5px;
       font-weight: 500;
       cursor: pointer;
     }
