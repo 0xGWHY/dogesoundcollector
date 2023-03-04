@@ -542,14 +542,21 @@ const MsgUnit = styled.div`
 
 const SkeletonUnit = styled.div`
   display: flex;
-  margin: 0 1rem 1rem 1rem;
   background-color: var(--color-box-content);
   border-radius: 15px;
   padding: 1rem;
   /* width: 100%; */
   height: 7rem;
-  width: 100%;
   max-width: 800px;
+
+  @media all and (max-width: 799px) {
+    width: 90%;
+    margin-bottom: 1rem;
+  }
+  @media all and (min-width: 800px) {
+    width: 100%;
+    margin: 0 1rem 1rem 1rem;
+  }
 
   .skeleton-animation {
     @keyframes gradient {
