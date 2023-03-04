@@ -484,12 +484,15 @@ const MsgUnit = styled.div`
     margin: 0 1rem 1rem 1rem;
   }
 
-  &:hover {
-    @media all and (min-width: 800px) {
-      transform: scale(1.05);
-      box-shadow: rgba(255, 255, 0, 0.5) 0px 0px 10px;
+  @media (hover: hover) {
+    &:hover {
+      @media all and (min-width: 800px) {
+        transform: scale(1.05);
+        box-shadow: rgba(255, 255, 0, 0.5) 0px 0px 10px;
+      }
     }
   }
+
   .box-profile {
     margin-right: 1.5rem;
     img {
