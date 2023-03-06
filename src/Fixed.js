@@ -79,10 +79,10 @@ export const MakeDogeSound = ({ contract, contractMain, active, setActive }) => 
                 ) : (
                   <button
                     onClick={() => {
-                      connectWalletFunc();
+                      //   connectWalletFunc();
                     }}
                   >
-                    지갑연결
+                    준비중
                   </button>
                 )}
               </div>
