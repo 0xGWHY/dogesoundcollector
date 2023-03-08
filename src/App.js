@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Caver from "caver-js";
 import { useInfiniteQuery } from "react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
@@ -1000,6 +1000,7 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [mateId, setMateId] = useState("");
   const [mateList, setMateList] = useState([]);
+  const modalRef = useRef(null);
 
   const toDSC = (number) => {
     const url = `https://v3.dogesound.club/mates/${number}`;
@@ -1097,6 +1098,8 @@ function App() {
         </div>
       </Header>
       <MakeDogeSound
+        modalRef={modalRef}
+        modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         mateList={mateList}
         setMateList={setMateList}
@@ -1160,7 +1163,7 @@ function App() {
         })}
       {dogeSounds.isFetching ? skeletonHandler() : ""}
       {dogeSounds.isFetching ? "" : dogeSounds.hasNextPage ? <div className="cursor" ref={ref}></div> : ""}
-      {modalOpen ? <Modal setModalOpen={setModalOpen} mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
+      {modalOpen ? <Modal setActive={setActive} modalRef={modalRef} setModalOpen={setModalOpen} mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
     </div>
   );
 }

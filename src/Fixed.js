@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { ReactComponent as Kaikas } from "./images/kaikas-logo.svg";
 
-export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMateList, account, setAccount, contract, contractMain, active, setActive }) => {
+export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMateId, mateList, setMateList, account, setAccount, contract, contractMain, active, setActive }) => {
   const ref = useRef(null);
   const klaytn = window.klaytn;
 
@@ -24,7 +24,7 @@ export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMa
   const writeDogeSound = async () => {};
 
   const menuHandler = (e) => {
-    if (active && !ref.current?.contains(e.target)) {
+    if (active && !(ref.current?.contains(e.target) || modalRef.current?.contains(e.target))) {
       setActive(false);
     }
   };
@@ -32,11 +32,19 @@ export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMa
   useEffect(() => {
     window.addEventListener("click", (e) => {
       menuHandler(e);
+      e.stopImmediatePropagation();
     });
     return window.removeEventListener("click", (e) => {
       menuHandler(e);
+      e.preventDefault();
     });
   }, [active]);
+
+  useEffect(() => {
+    if (modalOpen) {
+      setActive(true);
+    }
+  }, [modalOpen]);
 
   return (
     <Fixed
@@ -56,7 +64,7 @@ export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMa
           <div className="body">
             <div className="profile-area">
               {mateId ? <img onClick={() => setModalOpen(true)} className="mate-image" src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${mateId}.png`}></img> : <div className="mate-image"></div>}
-              <div className="mate-id">#{mateId}</div>
+              <div className="mate-id">{mateId ? `#${mateId}` : ""}</div>
             </div>
             <div className="msg-area">
               <div className="angle"></div>
@@ -132,7 +140,7 @@ const Fixed = styled.div`
       height: auto;
       min-height: 6rem;
       margin-bottom: 0.5rem;
-      cursor: pointer;
+      cursor: ${(props) => (props.isConnected ? "pointer" : "default")};
     }
     .mate-id {
       display: flex;
@@ -211,9 +219,9 @@ const Fixed = styled.div`
       font-weight: 500;
       cursor: pointer;
       svg {
-        height: 1rem;
+        height: 0.8rem;
         width: auto;
-        margin-right: calc(2rem * 0.35);
+        margin-right: 1rem;
       }
     }
   }

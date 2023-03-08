@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 
-export const Modal = ({ setModalOpen, mateId, setMateId, mateList }) => {
+export const Modal = ({ setActive, modalRef, setModalOpen, mateId, setMateId, mateList }) => {
   let dummy = [];
   for (let i = 0; i < 30; i++) {
     dummy.push(mateList[0]);
@@ -9,9 +10,19 @@ export const Modal = ({ setModalOpen, mateId, setMateId, mateList }) => {
     setMateId(id);
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    window.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+    return window.removeEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }, [mateId]);
+
   return (
     <ModalBackground>
-      <ModalBox>
+      <ModalBox ref={modalRef}>
         <div className="header">메이트 고르기</div>
         <div className="mate-wrapper">
           {dummy &&
@@ -47,7 +58,7 @@ export const ModalBox = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 1rem;
+  /* padding: 1rem; */
   line-height: 110%;
   @media all and (max-width: 799px) {
     width: 90%;
@@ -58,10 +69,11 @@ export const ModalBox = styled.div`
     height: 60%;
   }
   .header {
-    margin: 1rem 0 2rem 0;
+    margin: 2rem 0 1rem 0;
     font-size: 1.5rem;
   }
   .mate-wrapper {
+    padding: 1rem;
     display: grid;
     overflow-y: auto;
     @media all and (max-width: 799px) {
