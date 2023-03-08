@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
+import { Modal } from "./Modal";
 
 function App() {
   // const caver = new Caver("wss://public-node-api.klaytnapi.com/v1/cypress/ws");
@@ -995,6 +996,10 @@ function App() {
   );
   const [active, setActive] = useState(false);
   const [search, setSearch] = useState("");
+  const [account, setAccount] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [mateId, setMateId] = useState("");
+  const [mateList, setMateList] = useState([]);
 
   const toDSC = (number) => {
     const url = `https://v3.dogesound.club/mates/${number}`;
@@ -1004,28 +1009,6 @@ function App() {
     const url = `https://scope.klaytn.com/tx/${tx}?tabId=inputData`;
     window.open(url, "_blank");
   };
-
-  // const getBlockDateByNumber = (blockNumber) => {
-  //   const dateNow = new Date().getTime();
-  //   let result = "";
-  //   return caver.rpc.klay
-  //     .getBlockByNumber(blockNumber)
-  //     .then((block) => new Date(caver.utils.hexToNumber(block.timestamp) * 1000))
-  //     .then((date) => {
-  //       const ago =
-  //         Math.floor((dateNow - date) / 1000, 0) < 60 * 60
-  //           ? `${Math.max(Math.floor((dateNow - date) / 1000 / 60, 0), 1)} min ago`
-  //           : Math.floor((dateNow - date) / 1000, 0) < 60 * 60 * 24
-  //           ? `${Math.floor((dateNow - date) / 1000 / 60 / 60, 0)} hours ago`
-  //           : Math.floor((dateNow - date) / 1000, 0) < 60 * 60 * 24 * 30
-  //           ? `${Math.floor((dateNow - date) / 1000 / 60 / 60 / 24, 0)} days ago`
-  //           : `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${date.getDate()}`;
-  //       return ago;
-  //     })
-  //     .then((e) => {
-  //       result = e;
-  //     });
-  // };
 
   const fetch = async (block) => {
     let blockCount = block;
@@ -1113,7 +1096,19 @@ function App() {
           ></input>
         </div>
       </Header>
-      <MakeDogeSound contractMain={contractMain} contract={contract} active={active} setActive={setActive} />
+      <MakeDogeSound
+        setModalOpen={setModalOpen}
+        mateList={mateList}
+        setMateList={setMateList}
+        mateId={mateId}
+        setMateId={setMateId}
+        account={account}
+        setAccount={setAccount}
+        contractMain={contractMain}
+        contract={contract}
+        active={active}
+        setActive={setActive}
+      />
       {dogeSounds.data?.pages
         ?.flatMap((flatMap) => flatMap.data)
         .map((map) => {
@@ -1165,6 +1160,7 @@ function App() {
         })}
       {dogeSounds.isFetching ? skeletonHandler() : ""}
       {dogeSounds.isFetching ? "" : dogeSounds.hasNextPage ? <div className="cursor" ref={ref}></div> : ""}
+      {modalOpen ? <Modal mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
     </div>
   );
 }

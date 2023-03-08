@@ -1,29 +1,24 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { ReactComponent as Kaikas } from "./images/kaikas-logo.svg";
 
-export const MakeDogeSound = ({ contract, contractMain, active, setActive }) => {
+export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMateList, account, setAccount, contract, contractMain, active, setActive }) => {
   const ref = useRef(null);
-  const [account, setAccount] = useState("");
-  const [mateId, setMateId] = useState("");
-  const [mateList, setMateList] = useState([]);
   const klaytn = window.klaytn;
 
   const connectWalletFunc = async () => {
     const address = await klaytn.enable();
-    let temp = [];
     setAccount(address[0]);
 
-    for (let i = 0; i < 10000; i++) {
-      let addr = await contractMain.call("ownerOf", i);
-      //   console.log(addr === address[0]);
-      console.log(addr === address[0].toLowerCase());
-      if (addr === address[0].toLowerCase()) {
-        temp.push(i);
-        console.log(i);
-      }
-    }
-
-    setMateList(temp);
+    axios
+      .get(`https://backend.webplus.one/klaytn/nfts?holder=${address[0]}`)
+      .then((ele) => {
+        setMateList(ele.data.filter((filter) => filter.address === "0xE47E90C58F8336A2f24Bcd9bCB530e2e02E1E8ae"));
+      })
+      .then(() => {
+        setModalOpen(true);
+      });
   };
 
   const writeDogeSound = async () => {};
@@ -43,12 +38,11 @@ export const MakeDogeSound = ({ contract, contractMain, active, setActive }) => 
     });
   }, [active]);
 
-  console.log(mateList);
-
   return (
     <Fixed
       ref={ref}
       active={active}
+      isConnected={account.length !== 0}
       onClick={() => {
         if (!active) {
           setActive(true);
@@ -74,16 +68,18 @@ export const MakeDogeSound = ({ contract, contractMain, active, setActive }) => 
                       writeDogeSound();
                     }}
                   >
-                    작성하기
+                    왈왈!!
                   </button>
                 ) : (
-                  <button
-                    onClick={() => {
-                      //   connectWalletFunc();
-                    }}
-                  >
-                    준비중
-                  </button>
+                  //   <button
+                  //     onClick={() => {
+                  //       connectWalletFunc();
+                  //     }}
+                  //   >
+                  //     <Kaikas />
+                  //     <span>Connect to Kaikas</span>
+                  //   </button>
+                  <button>준비중</button>
                 )}
               </div>
             </div>
@@ -176,7 +172,7 @@ const Fixed = styled.div`
       outline: none;
       border-radius: 15px;
       line-height: 150%;
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 1rem 0;
     }
   }
 
@@ -196,16 +192,24 @@ const Fixed = styled.div`
     align-items: center;
     button {
       border: none;
+      height: 2rem;
       /* height: 1.5rem; */
-      padding: 0.3rem 1rem 0.3rem 1rem;
+      padding: 0.5rem 2rem 0.5rem 2rem;
       display: flex;
       justify-content: center;
       align-items: center;
       /* width: 6rem; */
-      background-color: black;
-      color: yellow;
-      border-radius: 5px;
+      background-color: ${(props) => (props.isConnected ? "var(--color-box-header)" : "#3366ff")};
+      color: ${(props) => (props.isConnected ? "yellow" : "white")};
+      border: ${(props) => (props.isConnected ? "solid 1px yellow" : "none")};
+      border-radius: calc(2rem * 0.35);
+      font-weight: 500;
       cursor: pointer;
+      svg {
+        height: 1rem;
+        width: auto;
+        margin-right: calc(2rem * 0.35);
+      }
     }
   }
 `;
