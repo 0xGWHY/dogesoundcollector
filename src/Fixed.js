@@ -55,8 +55,8 @@ export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMa
           <div className="description">클레이튼 블록체인에 기록되기 때문에 수정, 삭제가 불가능해. 알고있지?</div>
           <div className="body">
             <div className="profile-area">
-              {mateId ? <img className="mate-image" src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${mateId}.png`}></img> : <div className="mate-image"></div>}
-              <div className="mate-id">{mateId}</div>
+              {mateId ? <img onClick={() => setModalOpen(true)} className="mate-image" src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${mateId}.png`}></img> : <div className="mate-image"></div>}
+              <div className="mate-id">#{mateId}</div>
             </div>
             <div className="msg-area">
               <div className="angle"></div>
@@ -71,15 +71,14 @@ export const MakeDogeSound = ({ setModalOpen, mateId, setMateId, mateList, setMa
                     왈왈!!
                   </button>
                 ) : (
-                  //   <button
-                  //     onClick={() => {
-                  //       connectWalletFunc();
-                  //     }}
-                  //   >
-                  //     <Kaikas />
-                  //     <span>Connect to Kaikas</span>
-                  //   </button>
-                  <button>준비중</button>
+                  <button
+                    onClick={() => {
+                      connectWalletFunc();
+                    }}
+                  >
+                    <Kaikas />
+                    <span>Connect to Kaikas</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -133,12 +132,18 @@ const Fixed = styled.div`
       height: auto;
       min-height: 6rem;
       margin-bottom: 0.5rem;
+      cursor: pointer;
     }
     .mate-id {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 1.5rem;
       width: 100%;
       background-color: var(--color-box-header);
       border-radius: 15px;
+      color: yellow;
+      font-size: 1.1rem;
     }
   }
 

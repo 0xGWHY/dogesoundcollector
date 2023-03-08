@@ -1160,7 +1160,7 @@ function App() {
         })}
       {dogeSounds.isFetching ? skeletonHandler() : ""}
       {dogeSounds.isFetching ? "" : dogeSounds.hasNextPage ? <div className="cursor" ref={ref}></div> : ""}
-      {modalOpen ? <Modal mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
+      {modalOpen ? <Modal setModalOpen={setModalOpen} mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
     </div>
   );
 }

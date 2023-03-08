@@ -1,11 +1,14 @@
 import styled from "styled-components";
 
-export const Modal = ({ mateId, setMateId, mateList }) => {
+export const Modal = ({ setModalOpen, mateId, setMateId, mateList }) => {
   let dummy = [];
   for (let i = 0; i < 30; i++) {
     dummy.push(mateList[0]);
   }
-  console.log(mateList);
+  const selectMate = (id) => {
+    setMateId(id);
+    setModalOpen(false);
+  };
   return (
     <ModalBackground>
       <ModalBox>
@@ -13,7 +16,7 @@ export const Modal = ({ mateId, setMateId, mateList }) => {
         <div className="mate-wrapper">
           {dummy &&
             dummy.map((map, idx) => (
-              <div className={`mate ${map.tokenId}`} key={`${map.tokenId}-${idx}`}>
+              <div onClick={() => selectMate(map.tokenId)} className={`mate ${map.tokenId}`} key={`${map.tokenId}-${idx}`}>
                 <p>
                   <img src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.tokenId}.png`} alt={map.tokenId}></img>
                 </p>
@@ -65,7 +68,7 @@ export const ModalBox = styled.div`
       grid-template-columns: repeat(2, 1fr);
     }
     @media all and (min-width: 800px) {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
     }
     row-gap: 0.5rem;
     column-gap: 0.5rem;
@@ -73,7 +76,17 @@ export const ModalBox = styled.div`
   }
   .mate {
     margin: 0.5rem;
-
+    border-radius: 10px;
+    transition: all 0.3s;
+    cursor: pointer;
+    @media (hover: hover) {
+      &:hover {
+        @media all and (min-width: 800px) {
+          transform: scale(1.1);
+          box-shadow: rgba(255, 255, 0, 0.5) 0px 0px 10px;
+        }
+      }
+    }
     img {
       height: auto;
       width: 100%;
