@@ -11,15 +11,6 @@ export const Modal = ({ setActive, modalRef, setModalOpen, mateId, setMateId, ma
     setModalOpen(false);
   };
 
-  useEffect(() => {
-    window.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-    return window.removeEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-  }, [mateId]);
-
   return (
     <ModalBackground>
       <ModalBox ref={modalRef}>
@@ -27,7 +18,14 @@ export const Modal = ({ setActive, modalRef, setModalOpen, mateId, setMateId, ma
         <div className="mate-wrapper">
           {dummy &&
             dummy.map((map, idx) => (
-              <div onClick={() => selectMate(map.tokenId)} className={`mate ${map.tokenId}`} key={`${map.tokenId}-${idx}`}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  selectMate(map.tokenId);
+                }}
+                className={`mate ${map.tokenId}`}
+                key={`${map.tokenId}-${idx}`}
+              >
                 <p>
                   <img src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.tokenId}.png`} alt={map.tokenId}></img>
                 </p>
@@ -66,7 +64,7 @@ export const ModalBox = styled.div`
   }
   @media all and (min-width: 800px) {
     width: 70%;
-    height: 60%;
+    height: 80%;
   }
   .header {
     margin: 2rem 0 1rem 0;

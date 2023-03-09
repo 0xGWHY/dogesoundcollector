@@ -24,7 +24,7 @@ export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMa
   const writeDogeSound = async () => {};
 
   const menuHandler = (e) => {
-    if (active && !(ref.current?.contains(e.target) || modalRef.current?.contains(e.target))) {
+    if (!(ref.current?.contains(e.target) || modalRef.current?.contains(e.target))) {
       setActive(false);
     }
   };
@@ -32,11 +32,9 @@ export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMa
   useEffect(() => {
     window.addEventListener("click", (e) => {
       menuHandler(e);
-      e.stopImmediatePropagation();
     });
     return window.removeEventListener("click", (e) => {
       menuHandler(e);
-      e.preventDefault();
     });
   }, [active]);
 

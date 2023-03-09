@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Caver from "caver-js";
 import { useInfiniteQuery } from "react-query";
