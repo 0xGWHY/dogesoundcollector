@@ -58,6 +58,7 @@ export const ModalBox = styled.div`
   flex-direction: column;
   /* padding: 1rem; */
   line-height: 110%;
+
   @media all and (max-width: 799px) {
     width: 90%;
     height: 80%;
@@ -74,11 +75,18 @@ export const ModalBox = styled.div`
     padding: 1rem;
     display: grid;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
     @media all and (max-width: 799px) {
       grid-template-columns: repeat(2, 1fr);
     }
-    @media all and (min-width: 800px) {
+    @media all and (min-width: 800px) and (max-width: 1200px) {
       grid-template-columns: repeat(4, 1fr);
+    }
+    @media all and (min-width: 1201px) {
+      grid-template-columns: repeat(5, 1fr);
     }
     row-gap: 0.5rem;
     column-gap: 0.5rem;

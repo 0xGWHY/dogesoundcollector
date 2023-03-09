@@ -142,18 +142,15 @@ font-family: 'Noto Sans KR', sans-serif; */
 }
 
 .App {
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
-  width: 100vw;
+  /* width: 100vw; */
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-bottom: 2rem;
-}
-.App::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera*/
 }
 
 /* .cursor {
