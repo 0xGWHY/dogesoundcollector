@@ -2,15 +2,18 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { ReactComponent as Kaikas } from "./images/kaikas-logo.svg";
+import Caver from "caver-js";
+// var global = global || window;
+// global.Buffer = global.Buffer || require("buffer").Buffer;
 
-export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMateId, mateList, setMateList, account, setAccount, contract, contractMain, active, setActive }) => {
+export const MakeDogeSound = ({ queryControl, setQueryControl, caver, modalRef, modalOpen, setModalOpen, mateId, setMateId, mateList, setMateList, account, setAccount, contract, contractMain, active, setActive }) => {
   const ref = useRef(null);
+  const [dogeSound, setDogeSound] = useState("");
   const klaytn = window.klaytn;
 
   const connectWalletFunc = async () => {
     const address = await klaytn.enable();
     setAccount(address[0]);
-
     axios
       .get(`https://backend.webplus.one/klaytn/nfts?holder=${address[0]}`)
       .then((ele) => {
@@ -21,7 +24,37 @@ export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMa
       });
   };
 
-  const writeDogeSound = async () => {};
+  const writeDogeSound = async () => {
+    setQueryControl(queryControl + 1);
+    window.scrollTo(0, 0);
+    // const kaikas = new Caver(klaytn);
+    // const funcSign = await caver.abi.encodeFunctionSignature({
+    //   name: "set",
+    //   type: "function",
+    //   inputs: [
+    //     {
+    //       type: "uint256",
+    //       name: "mateId",
+    //     },
+    //     {
+    //       type: "string",
+    //       name: "message",
+    //     },
+    //   ],
+    // });
+    // const paramSign = await caver.abi.encodeParameters(["uint256", "string"], [mateId, dogeSound]);
+    // const data = `${funcSign}${paramSign.slice(2)}`;
+    // return kaikas.klay
+    //   .sendTransaction({
+    //     type: "SMART_CONTRACT_EXECUTION",
+    //     from: account,
+    //     to: "0x1a693c175E510959F37d54AcFF0fAC0daC8d9a2D",
+    //     data: data,
+    //     gas: "2000000",
+    //     value: 0,
+    //   })
+    //   .then((res) => console.log(res));
+  };
 
   const menuHandler = (e) => {
     if (!(ref.current?.contains(e.target) || modalRef.current?.contains(e.target))) {
@@ -61,12 +94,23 @@ export const MakeDogeSound = ({ modalRef, modalOpen, setModalOpen, mateId, setMa
           <div className="description">클레이튼 블록체인에 기록되기 때문에 수정, 삭제가 불가능해. 알고있지?</div>
           <div className="body">
             <div className="profile-area">
-              {mateId ? <img onClick={() => setModalOpen(true)} className="mate-image" src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${mateId}.png`}></img> : <div className="mate-image"></div>}
+              {mateId ? (
+                <img onClick={() => setModalOpen(true)} className="mate-image" src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${mateId}.png`}></img>
+              ) : (
+                <div
+                  onClick={() => {
+                    if (account.length !== 0) {
+                      setModalOpen(true);
+                    }
+                  }}
+                  className="mate-image"
+                ></div>
+              )}
               <div className="mate-id">{mateId ? `#${mateId}` : ""}</div>
             </div>
             <div className="msg-area">
               <div className="angle"></div>
-              <textarea className="msg-box" placeholder="저의 개소리는요.."></textarea>
+              <textarea className="msg-box" placeholder="저의 개소리는요.." onChange={(e) => setDogeSound(e.target.value)} value={dogeSound}></textarea>
               <div className="tx-send">
                 {account ? (
                   <button
@@ -158,6 +202,7 @@ const Fixed = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
+
     .angle::after {
       // 삼각형 부분
       position: absolute;
@@ -172,6 +217,13 @@ const Fixed = styled.div`
       color: black;
     }
     .msg-box {
+      overflow-y: scroll;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera*/
+      }
+
       flex: 1 0 0;
       resize: none;
       padding: 1rem 1rem 2rem 1rem;

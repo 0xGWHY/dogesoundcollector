@@ -1,34 +1,64 @@
 import styled from "styled-components";
 import { useEffect } from "react";
+import { useQueries, useQuery } from "react-query";
 
-export const Modal = ({ setActive, modalRef, setModalOpen, mateId, setMateId, mateList }) => {
-  let dummy = [];
-  for (let i = 0; i < 30; i++) {
-    dummy.push(mateList[0]);
-  }
+export const Modal = ({ contract, setActive, modalRef, modalOpen, setModalOpen, mateId, setMateId, mateList }) => {
+  // let dummy = [];
+  // for (let i = 0; i < 30; i++) {
+  //   dummy.push(mateList[0]);
+  // }
+  const remainBlocks = useQueries(
+    mateList.map((map) => {
+      return {
+        queryKey: ["remainBlock", map.tokenId],
+        queryFn: () => {
+          return contract.call("remainBlocks", map.tokenId).then((res) => ({ res: res, id: map.tokenId }));
+        },
+        refetchOnWindowFocus: false,
+        refetchInterval: 1000,
+      };
+    })
+    // {
+    //   refetchOnWindowFocus: false,
+    //   refetchInterval: 1000,
+    // }
+  );
+
   const selectMate = (id) => {
-    setMateId(id);
-    setModalOpen(false);
+    if (remainBlocks.filter((filter) => filter.data.id === id)[0].data.res === "0") {
+      setMateId(id);
+      setModalOpen(false);
+    }
   };
 
+  const backgroundClick = (e) => {
+    e.stopPropagation();
+    if (modalOpen && !modalRef.current?.contains(e.target)) {
+      setModalOpen(false);
+    }
+  };
+
+  // console.log(remainBlocks.filter((filter) => filter.data.id === "5268")[0].data.res === "0");
+
   return (
-    <ModalBackground>
+    <ModalBackground onClick={(e) => backgroundClick(e)}>
       <ModalBox ref={modalRef}>
         <div className="header">메이트 고르기</div>
         <div className="mate-wrapper">
-          {dummy &&
-            dummy.map((map, idx) => (
+          {mateList &&
+            mateList.map((map, idx) => (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
                   selectMate(map.tokenId);
                 }}
-                className={`mate ${map.tokenId}`}
+                className={`mate ${map.tokenId} ${remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res === "0" ? "" : "disabled"}`}
                 key={`${map.tokenId}-${idx}`}
               >
                 <p>
-                  <img src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.tokenId}.png`} alt={map.tokenId}></img>
+                  <img className={`${remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res === "0" ? "" : "disabled"}`} src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.tokenId}.png`} alt={map.tokenId}></img>
                 </p>
+                {remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res !== "0" ? <p className="remain-block">{remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res}</p> : ""}
                 <p>#{map.tokenId}</p>
               </div>
             ))}
@@ -96,6 +126,7 @@ export const ModalBox = styled.div`
     margin: 0.5rem;
     border-radius: 10px;
     transition: all 0.3s;
+    position: relative;
     cursor: pointer;
     @media (hover: hover) {
       &:hover {
@@ -105,10 +136,18 @@ export const ModalBox = styled.div`
         }
       }
     }
+    &.disabled:hover {
+      transform: scale(1) !important;
+      box-shadow: none !important;
+      cursor: default !important;
+    }
     img {
       height: auto;
       width: 100%;
       border-radius: 10px;
+      &.disabled {
+        filter: grayscale(100%);
+      }
     }
     p {
       display: flex;
@@ -117,5 +156,17 @@ export const ModalBox = styled.div`
       font-size: 1.2rem;
       margin: 0 0 0.5rem 0;
     }
+  }
+  .remain-block {
+    position: absolute;
+    background-color: lightgray;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid red;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    color: red;
+    font-weight: 500;
+    font-size: 1.2rem !important;
   }
 `;
