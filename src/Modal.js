@@ -58,7 +58,11 @@ export const Modal = ({ contract, setActive, modalRef, modalOpen, setModalOpen, 
                 <p>
                   <img className={`${remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res === "0" ? "" : "disabled"}`} src={`https://storage.googleapis.com/dsc-mate/336/dscMate-${map.tokenId}.png`} alt={map.tokenId}></img>
                 </p>
-                {remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res !== "0" ? <p className="remain-block">{remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res}</p> : ""}
+                {remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res === "0" || remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res === undefined ? (
+                  ""
+                ) : (
+                  <p className="remain-block">{remainBlocks.filter((filter) => filter?.data?.id === map.tokenId)[0]?.data.res}</p>
+                )}
                 <p>#{map.tokenId}</p>
               </div>
             ))}

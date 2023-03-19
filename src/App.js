@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
 import { Modal } from "./Modal";
+import { WriteDone } from "./WriteDone";
 
 function App() {
   // const caver = new Caver("wss://public-node-api.klaytnapi.com/v1/cypress/ws");
