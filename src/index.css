@@ -10,6 +10,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-background);
   color: white;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;

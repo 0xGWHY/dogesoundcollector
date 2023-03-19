@@ -1,18 +1,20 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Caver from "caver-js";
 import { useInfiniteQuery } from "react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
 import { Modal } from "./Modal";
+import { WriteDone } from "./WriteDone";
 
 function App() {
   // const caver = new Caver("wss://public-node-api.klaytnapi.com/v1/cypress/ws");
-  const caver = new Caver("wss://public-en-cypress.klaytn.net/ws");
+  const caver = new Caver("wss://public-en-cypress.klaytn.net/ws", { reconnect: { auto: true } });
+  // const caver = new Caver(window.klaytn);
+  const [queryControl, setQueryControl] = useState(1);
   const [data, setData] = useState("");
-  const [latestBlock, setLatestBlock] = useState();
+  const [latestBlock, setLatestBlock] = useState("");
   const [hasBlock, setHasBlock] = useState(false);
   const contract = caver.contract.create(
     [
@@ -1000,6 +1002,7 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [mateId, setMateId] = useState("");
   const [mateList, setMateList] = useState([]);
+  const modalRef = useRef(null);
 
   const toDSC = (number) => {
     const url = `https://v3.dogesound.club/mates/${number}`;
@@ -1035,7 +1038,7 @@ function App() {
     })
     .then(() => setHasBlock(true));
 
-  const dogeSounds = useInfiniteQuery(["dogeSounds"], ({ pageParam = latestBlock }) => fetch(pageParam), {
+  const dogeSounds = useInfiniteQuery(["dogeSounds", queryControl], ({ pageParam = latestBlock }) => fetch(pageParam), {
     getNextPageParam: (lastPage) => lastPage.lastBlock,
     refetchOnWindowFocus: false,
     enabled: hasBlock,
@@ -1097,6 +1100,11 @@ function App() {
         </div>
       </Header>
       <MakeDogeSound
+        queryControl={queryControl}
+        setQueryControl={setQueryControl}
+        caver={caver}
+        modalRef={modalRef}
+        modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         mateList={mateList}
         setMateList={setMateList}
@@ -1160,7 +1168,7 @@ function App() {
         })}
       {dogeSounds.isFetching ? skeletonHandler() : ""}
       {dogeSounds.isFetching ? "" : dogeSounds.hasNextPage ? <div className="cursor" ref={ref}></div> : ""}
-      {modalOpen ? <Modal mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
+      {modalOpen ? <Modal contract={contract} setActive={setActive} modalRef={modalRef} modalOpen={modalOpen} setModalOpen={setModalOpen} mateId={mateId} setMateId={setMateId} mateList={mateList} /> : ""}
     </div>
   );
 }
