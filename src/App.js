@@ -7,11 +7,28 @@ import { useInView } from "react-intersection-observer";
 import { MakeDogeSound } from "./Fixed";
 import { Modal } from "./Modal";
 import { WriteDone } from "./WriteDone";
+import { Buffer } from "buffer";
+Buffer.from("anything", "base64");
 
 function App() {
   // const caver = new Caver("wss://public-node-api.klaytnapi.com/v1/cypress/ws");
-  const caver = new Caver("wss://public-en-cypress.klaytn.net/ws", { reconnect: { auto: true } });
-  // const caver = new Caver(window.klaytn);
+  // , { reconnect: { auto: true } }
+  // const caver = new Caver("wss://public-en-cypress.klaytn.net/ws");
+  // const caver = new Caver("https://public-en-cypress.klaytn.net");
+
+  const accessKeyId = process.env.REACT_APP_ACCESS;
+  const secretAccessKey = process.env.REACT_APP_SECRET;
+
+  const option = {
+    headers: [
+      { name: "Authorization", value: "Basic " + Buffer.from(accessKeyId + ":" + secretAccessKey).toString("base64") },
+      { name: "x-chain-id", value: "8217" },
+    ],
+  };
+
+  const caver = new Caver(new Caver.providers.HttpProvider("https://node-api.klaytnapi.com/v1/klaytn", option));
+
+  // const caver = new Caver(`wss://{${process.env.REACT_APP_ACCESS}}:{${process.env.REACT_APP_SECRET}}@node-api.klaytnapi.com/v1/ws/open?chain-id=8217`);
   const [queryControl, setQueryControl] = useState(1);
   const [data, setData] = useState("");
   const [latestBlock, setLatestBlock] = useState("");
