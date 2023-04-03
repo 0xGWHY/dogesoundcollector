@@ -1038,7 +1038,7 @@ function App() {
         result = [...e, ...result];
       });
       // console.log(blockCount);
-      if (blockCount - 10000 > 0) {
+      if (blockCount - 100000 > 0) {
         blockCount -= 100000;
       } else {
         blockCount = 0;
