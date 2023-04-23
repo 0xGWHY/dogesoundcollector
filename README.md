@@ -1,4 +1,5 @@
-# Getting Started with Create React App
+# Doge Sound Collector
+https://dogesoundcollector.vercel.app/
 
 ## 메이트들이 뭐어라고 썼는지 모니터링 하세요 😉
 
